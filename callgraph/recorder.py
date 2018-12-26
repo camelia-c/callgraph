@@ -16,11 +16,11 @@ class CallGraphRecorder(object):
         A :class:`graphviz.Digraph`.
     """
 
-    def __init__(self, equal=False, label_returns=False, graph_attrs=None):
+    def __init__(self, equal=False, label_returns=False, hide_results = False, graph_attrs=None):
         self.graph = Digraph(format='svg', strict=True)
         if graph_attrs:
             self.graph.graph_attr.update(**graph_attrs)
-        self._options = {'equal': equal, 'label_returns': label_returns}
+        self._options = {'equal': equal, 'label_returns': label_returns, 'hide_results': hide_results}
         self._next_call_idx = 0
         self._callers = []
 
@@ -41,17 +41,21 @@ class CallGraphRecorder(object):
         """Record a function call."""
         graph = self.graph
         label_returns = self._options['label_returns']
+        hide_results = self._options['hide_results']
         label = "{}({}{}{})".format(fn.__name__,
                                     ', '.join(map(repr, args)),
                                     ', ' if args and kwargs else '',
                                     ', '.join(starmap("{}={}".format, kwargs.items())))
-        if not (label_returns and caller_id):
+        if hide_results == False and not (label_returns and caller_id):
             label += " ↦ {}".format(result)
         graph.node(call_id, label=label)
 
         if caller_id:
-            if label_returns:
-                graph.edge(caller_id, call_id, label=str(result), dir='back')
+            if label_returns == True:
+                if hide_results == False:
+                    graph.edge(caller_id, call_id, label=str(result), dir='back')
+                else:
+                    graph.edge(caller_id, call_id, dir='back')
             else:
                 graph.edge(caller_id, call_id)
         else:

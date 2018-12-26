@@ -47,6 +47,8 @@ class CallGraphMagics(Magics):
         --no-clear: Don't clear :func:`~functools.lru_cache` caches before
         execution.
 
+        --hide-results: Don't show results of function calls in the graph.
+
         Examples
         --------
         ::
@@ -69,7 +71,7 @@ class CallGraphMagics(Magics):
         filename = '<magic callgraph>'
         mode = 'exec'
 
-        opts, stmt = self.parse_options(line, 'w:ehr', 'no-clear', posix=False)
+        opts, stmt = self.parse_options(line, 'w:ehr', 'no-clear', 'hide-results', posix=False)
 
         # Parse the options. Create a call graph recorder with those options.
         options = {'graph_attrs': {}}
@@ -81,6 +83,8 @@ class CallGraphMagics(Magics):
             options['graph_attrs']['rankdir'] = 'LR'
         if 'w' in opts:
             options['graph_attrs']['size'] = '{},'.format(opts['w'])
+        if 'hide-results' in opts:
+            options['hide_results'] = True
         rec = CallGraphRecorder(**options)
 
         # Parse the statement. Collect calls to instrument.
