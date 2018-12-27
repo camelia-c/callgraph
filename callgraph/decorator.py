@@ -3,7 +3,7 @@
 from .recorder import CallGraphRecorder
 
 
-def decorator(fn=None, recorder=None, label_returns=False, graph_attrs=None):
+def decorator(fn=None, recorder=None, label_returns=False, hide_results = False, graph_attrs=None):
     """Instrument a function to record calls for the call graph.
 
     Decorator that wraps a function with instrumentation to record calls to
@@ -38,6 +38,7 @@ def decorator(fn=None, recorder=None, label_returns=False, graph_attrs=None):
             return nchoosek(n - 1, k - 1) + nchoosek(n - 1, k)
     """
     rec = recorder or CallGraphRecorder(label_returns=label_returns,
+                                        hide_results = hide_results,
                                         graph_attrs=graph_attrs)
 
     def graphing_decorator(fn):
