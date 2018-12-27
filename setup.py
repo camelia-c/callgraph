@@ -8,5 +8,6 @@ setup(name='callgraph',
       author_email='',
       license='MIT',
       packages=['callgraph'],
+      install_requires=['graphviz','IPython'],
       zip_safe=False)
 
